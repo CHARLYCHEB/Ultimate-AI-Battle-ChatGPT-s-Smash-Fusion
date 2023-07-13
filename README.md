@@ -1,4 +1,4 @@
-# Ultimate AI Battle-ChatGPT's Smash Fusion
+# Ultimate AI Battle ChatGPT's Smash Fusion
 
 [chatgpt makes a smash bros game]
 
