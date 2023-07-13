@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Player Movement Example</title>
+  <style>
+    #player {
+      position: absolute;
+      width: 32px; /* Adjust the width and height as per your sprite's size */
+      height: 32px;
+      background-image: url('player_sprite.png'); /* Replace with your sprite image path */
+    }
+  </style>
+</head>
+<body>
+
+  <div id="player"></div>
+
+  <script>
+    const player = {
+      x: 0,
+      y: 0,
+      isJumping: false,
+      isDoubleJumping: false,
+      isSprinting: false
+    };
+
+    document.addEventListener('keydown', e => {
+      if (e.code === 'KeyA' || e.code === 'KeyD') {
+        if (player.isSprinting) {
+          player.isSprinting = false;
+        } else if (!player.isJumping && !player.isDoubleJumping) {
+          player.isSprinting = true;
+          setTimeout(() => {
+            player.isSprinting = false;
+          }, 200);
+        }
+      }
+    });
+
+    document.addEventListener('keyup', e => {
+      if (e.code === 'KeyW' && !player.isJumping && !player.isDoubleJumping) {
+        player.isJumping = true;
+        player.y -= 10;
+      } else if (e.code === 'KeyW' && player.isJumping && !player.isDoubleJumping) {
+        player.isJumping = false;
+        player.isDoubleJumping = true;
+        player.y -= 10;
+      }
+    });
+
+    function update() {
+      const playerElement = document.getElementById('player');
+
+      if (player.isSprinting) {
+        player.x += 3;
+        playerElement.style.backgroundPositionX = '32px'; // Adjust the sprite position accordingly
+      } else if (player.isJumping || player.isDoubleJumping) {
+        // Handle jump physics, gravity, and animation here
+        // For simplicity, we'll just log the player's position
+        console.log(`Player position: (${player.x}, ${player.y})`);
+      } else if (player.x !== 0) {
+        player.x += 1;
+        playerElement.style.backgroundPositionX = '0'; // Adjust the sprite position accordingly
+      }
+
+      playerElement.style.transform = `translate(${player.x}px, ${player.y}px)`;
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+  </script>
+
+</body>
+</html>
