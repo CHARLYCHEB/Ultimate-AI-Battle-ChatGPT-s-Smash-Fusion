@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Player Movement Example</title>
+  <style>
+    #player {
+      position: absolute;
+      width: 32px; /* Adjust the width and height as per your player sprite's size */
+      height: 32px;
+      background-image: url('player_sprite.png'); /* Replace with your player sprite image path */
+      z-index: 1; /* Ensure player is above the ground */
+    }
+    #ground {
+      position: absolute;
+      width: 100%; /* Adjust the width as per your ground sprite's size */
+      height: 200px; /* Adjust the height as per your ground sprite's size */
+      background-image: url('ground_sprite.png'); /* Replace with your ground sprite image path */
+      bottom: 0; /* Position the ground at the bottom */
+      z-index: 0; /* Ensure ground is behind the player */
+    }
+    #gameContainer {
+      position: relative;
+      height: 800px; /* Increase the height as needed */
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="gameContainer">
+    <div id="ground"></div>
+    <div id="player"></div>
+  </div>
+
+  <script>
+    const player = {
+      x: window.innerWidth / 2, // Spawn in the center of the screen horizontally
+      y: document.getElementById('gameContainer').offsetHeight - 32, // Spawn at the bottom of the screen
+      velocityX: 0,
+      velocityY: 0,
+      isJumping: false,
+      isDoubleJumping: false,
+      isSprinting: false,
+      leftPressCount: 0,
+      rightPressCount: 0,
+      upPressCount: 0,
+      downPressCount: 0
+    };
+
+    const movementSpeed = 3; // Increase the movement speed
+    const sprintCountThreshold = 2; // Number of consecutive key presses to trigger sprinting
+    const sprintMultiplier = 1.5; // Multiplier for sprinting speed
+    const jumpVelocity = -10;
+    const doubleJumpVelocity = -12;
+    const gravity = 0.5;
+    const cameraMoveSpeed = 5; // Adjust the camera move speed as needed
+
+    const gameContainer = document.getElementById('gameContainer');
+    const playerElement = document.getElementById('player');
+
+    let cameraOffsetY = 0; // Track the current camera offset
+    let groundLevel = gameContainer.offsetHeight - playerElement.offsetHeight; // Initial ground level
+
+    document.addEventListener('keydown', e => {
+      if (e.code === 'KeyA') {
+        player.velocityX = -movementSpeed;
+        player.leftPressCount++;
+        player.rightPressCount = 0;
+      } else if (e.code === 'KeyD') {
+        player.velocityX = movementSpeed;
+        player.rightPressCount++;
+        player.leftPressCount = 0;
+      } else if (e.code === 'KeyW' && !player.isJumping && !player.isDoubleJumping) {
+        player.velocityY = jumpVelocity;
+        player.isJumping = true;
+      } else if (e.code === 'KeyS' && !player.isJumping && !player.isDoubleJumping) {
+        player.y += cameraMoveSpeed;
+        updatePlayerPosition();
+      }
+
+      if (player.leftPressCount === sprintCountThreshold || player.rightPressCount === sprintCountThreshold) {
+        player.isSprinting = true;
+      }
+
+      if (e.code === 'NumpadAdd' || e.code === 'Equal') {
+        moveCamera(-cameraMoveSpeed);
+      } else if (e.code === 'NumpadSubtract' || e.code === 'Minus') {
+        moveCamera(cameraMoveSpeed);
+      }
+
+      if (e.code === 'Digit0') {
+        player.downPressCount++;
+        player.upPressCount = 0;
+        lowerGroundLevel();
+      } else if (e.code === 'Digit9') {
+        player.upPressCount++;
+        player.downPressCount = 0;
+        raiseGroundLevel();
+      }
+    });
+
+    document.addEventListener('keyup', e => {
+      if (e.code === 'KeyA' || e.code === 'KeyD') {
+        player.velocityX = 0;
+        player.leftPressCount = 0;
+        player.rightPressCount = 0;
+        player.isSprinting = false;
+      }
+    });
+
+    function moveCamera(dy) {
+      cameraOffsetY += dy;
+      gameContainer.style.transform = `translateY(${cameraOffsetY}px)`;
+    }
+
+    function lowerGroundLevel() {
+      groundLevel += cameraMoveSpeed;
+      updatePlayerPosition();
+    }
+
+    function raiseGroundLevel() {
+      groundLevel -= cameraMoveSpeed;
+      updatePlayerPosition();
+    }
+
+    function updatePlayerPosition() {
+      player.y = Math.max(player.y, -groundLevel);
+      playerElement.style.transform = `translate(${player.x}px, ${player.y}px)`;
+    }
+
+    function update() {
+      player.x += player.velocityX * (player.isSprinting ? sprintMultiplier : 1); // Apply sprinting speed if sprinting
+
+      if (!isTouchingGround()) {
+        player.y += player.velocityY;
+        player.velocityY += gravity;
+      } else {
+        player.velocityY = 0;
+        player.isJumping = false;
+        player.isDoubleJumping = false;
+      }
+
+      playerElement.style.transform = `translate(${player.x}px, ${player.y}px)`;
+
+      requestAnimationFrame(update);
+    }
+
+    function isTouchingGround() {
+      return player.y >= -groundLevel;
+    }
+
+    update();
+  </script>
+
+</body>
+</html>
