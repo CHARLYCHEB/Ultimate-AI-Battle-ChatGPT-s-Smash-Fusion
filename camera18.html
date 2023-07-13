@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Player Movement Example</title>
+  <style>
+    #player {
+      position: absolute;
+      width: 32px; /* Adjust the width and height as per your player sprite's size */
+      height: 32px;
+      background-image: url('player_sprite.png'); /* Replace with your player sprite image path */
+      z-index: 1; /* Ensure player is above the ground */
+    }
+    #ground {
+      position: absolute;
+      width: 100%; /* Adjust the width as per your ground sprite's size */
+      height: 200px; /* Adjust the height as per your ground sprite's size */
+      background-image: url('ground_sprite.png'); /* Replace with your ground sprite image path */
+      bottom: 0; /* Position the ground at the bottom */
+      z-index: 0; /* Ensure ground is behind the player */
+    }
+    #gameContainer {
+      position: relative;
+      height: 800px; /* Increase the height as needed */
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="gameContainer">
+    <div id="ground"></div>
+    <div id="player"></div>
+  </div>
+
+  <script>
+    // JavaScript code here
+  </script>
+
+</body>
+</html>
