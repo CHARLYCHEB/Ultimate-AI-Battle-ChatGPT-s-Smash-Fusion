@@ -56,3 +56,30 @@
         player.y -= 10; // Adjust the jump height as needed
       } else if (keys['KeyW'] && player.isJumping && !player.isDoubleJumping) {
         player.isJumping = false;
+        player.isDoubleJumping = true;
+        player.y -= 10; // Adjust the double jump height as needed
+      }
+
+      // Apply gravity
+      if (player.y < 0) {
+        player.y += 2; // Adjust the gravity value as needed
+      } else {
+        player.y = 0;
+        player.isJumping = false;
+        player.isDoubleJumping = false;
+      }
+
+      // Update player position
+      // You would typically update the player's visual representation here
+      console.log(`Player position: (${player.x}, ${player.y})`);
+
+      // Call the update function on each frame
+      requestAnimationFrame(update);
+    }
+
+    // Start the game loop
+    update();
+  </script>
+
+</body>
+</html>
