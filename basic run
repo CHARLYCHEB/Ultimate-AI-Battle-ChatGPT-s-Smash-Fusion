@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  
+</head>
+<body>
+
+  
+
+  <script>
 // Player object with initial position and movement variables
 const player = {
   x: 0,
@@ -69,3 +79,8 @@ function update() {
 
 // Start the game loop
 update();
+
+  </script>
+
+</body>
+</html>
