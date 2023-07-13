@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Player Movement Example</title>
+</head>
+<body>
+
+  <script>
+    const player = {
+      x: 0,
+      y: 0,
+      isJumping: false,
+      isDoubleJumping: false,
+      isSprinting: false
+    };
+
+    document.addEventListener('keydown', e => {
+      if (e.code === 'KeyA' || e.code === 'KeyD') {
+        if (player.isSprinting) {
+          player.isSprinting = false;
+        } else if (!player.isJumping && !player.isDoubleJumping) {
+          player.isSprinting = true;
+          setTimeout(() => {
+            player.isSprinting = false;
+          }, 200);
+        }
+      }
+    });
+
+    document.addEventListener('keyup', e => {
+      if (e.code === 'KeyW' && !player.isJumping && !player.isDoubleJumping) {
+        player.isJumping = true;
+        player.y -= 10;
+      } else if (e.code === 'KeyW' && player.isJumping && !player.isDoubleJumping) {
+        player.isJumping = false;
+        player.isDoubleJumping = true;
+        player.y -= 10;
+      }
+    });
+
+    function update() {
+      if (player.isSprinting) {
+        player.x += 3;
+      } else if (player.isJumping || player.isDoubleJumping) {
+        // Handle jump physics, gravity, and animation here
+        // For simplicity, we'll just log the player's position
+        console.log(`Player position: (${player.x}, ${player.y})`);
+      } else if (player.x !== 0) {
+        player.x += 1;
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+  </script>
+
+</body>
+</html>
